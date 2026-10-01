@@ -1,0 +1,579 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#ffd92f">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>ピカチュウの大冒険</title>
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <style>
+    :root {
+      --yellow: #ffd92f;
+      --yellow2: #fff4a8;
+      --brown: #4b3518;
+      --white: #fffdf4;
+      --line: #e6c94a;
+      --green: #35a853;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: linear-gradient(#ffe76b 0 145px, #fff9cf 145px 100%);
+      color: var(--brown);
+      font-family: -apple-system, BlinkMacSystemFont, "Noto Sans JP", "Yu Gothic", sans-serif;
+    }
+
+    .wrap {
+      max-width: 760px;
+      margin: auto;
+      padding-bottom: 40px;
+    }
+
+    header {
+      padding: 18px 18px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(255,217,47,.96);
+      box-shadow: 0 2px 10px #8b6f1b33;
+    }
+
+    .logo { font-size: 34px; }
+    .title { font-weight: 900; font-size: 21px; }
+    .sub { font-size: 12px; opacity: .7; }
+
+    main { padding: 16px; }
+
+    .hero, .card {
+      background: var(--white);
+      border: 2px solid var(--line);
+      border-radius: 22px;
+      box-shadow: 0 6px 18px #765a1220;
+    }
+
+    .hero {
+      padding: 22px 18px;
+      text-align: center;
+    }
+
+    .pikachu {
+      font-size: 72px;
+      line-height: 1;
+      margin: 2px 0 12px;
+    }
+
+    .bubble {
+      display: inline-block;
+      background: var(--yellow2);
+      border-radius: 18px;
+      padding: 10px 15px;
+      font-weight: 800;
+      margin-bottom: 16px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 16px;
+      padding: 14px 18px;
+      font-size: 16px;
+      font-weight: 900;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .scanBtn {
+      background: #3b3020;
+      color: white;
+      width: 100%;
+      font-size: 18px;
+    }
+
+    .secondary {
+      background: var(--yellow);
+      color: var(--brown);
+    }
+
+    .ghost {
+      background: #fff;
+      border: 1px solid var(--line);
+    }
+
+    .card {
+      margin-top: 16px;
+      padding: 18px;
+    }
+
+    .sectionTitle {
+      font-size: 18px;
+      font-weight: 900;
+      margin: 0 0 12px;
+    }
+
+    #reader {
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto;
+      overflow: hidden;
+      border-radius: 16px;
+    }
+
+    .hint {
+      font-size: 13px;
+      line-height: 1.7;
+      opacity: .75;
+      margin-top: 10px;
+    }
+
+    .hidden { display: none !important; }
+
+    .progressTop {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      margin-bottom: 9px;
+    }
+
+    .count { font-weight: 900; }
+
+    .bar {
+      height: 13px;
+      background: #eee0a0;
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .bar > div {
+      height: 100%;
+      width: 0;
+      background: var(--green);
+      transition: width .3s;
+    }
+
+    .qrow {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 4px;
+      border-bottom: 1px dashed #d9c56a;
+    }
+
+    .qrow:last-child { border-bottom: 0; }
+    .badge { font-size: 25px; width: 34px; text-align: center; }
+    .qname { font-weight: 900; flex: 1; }
+    .status { font-size: 13px; font-weight: 800; color: #888; }
+    .done { color: var(--green); }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .actions button {
+      flex: 1;
+      min-width: 130px;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: #0008;
+      z-index: 50;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 14px;
+    }
+
+    .modalBox {
+      width: min(600px, 100%);
+      background: #fffdf4;
+      border-radius: 24px 24px 16px 16px;
+      padding: 22px;
+      border: 2px solid var(--line);
+    }
+
+    .modalBox h2 { margin: 0 0 8px; }
+    .modalBox p { line-height: 1.6; }
+    .small { font-size: 12px; opacity: .7; }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #d4bd56;
+      border-radius: 12px;
+      font-size: 14px;
+      margin-top: 5px;
+    }
+
+    .formrow { margin: 10px 0; }
+    .formrow label { font-size: 12px; font-weight: 800; }
+
+    @media (min-width: 760px) {
+      .modal { align-items: center; }
+      header { border-radius: 0 0 20px 20px; }
+    }
+  </style>
+</head>
+
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo">⚡</div>
+    <div>
+      <div class="title">ピカチュウの大冒険</div>
+      <div class="sub">QRを見つけて10問の冒険を進めよう！</div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="pikachu">⚡🐭</div>
+      <div class="bubble">QRコードを見つけたら、ここから読み取ろう！</div>
+      <button class="scanBtn" onclick="startScanner()">📷 QRコードをよみとる</button>
+      <div class="actions">
+        <button class="secondary" onclick="openChooser()">🔗 問題をひらく</button>
+        <button class="ghost" onclick="openSettings()">⚙️ 問題設定</button>
+      </div>
+    </section>
+
+    <section id="scannerCard" class="card hidden">
+      <div class="sectionTitle">📷 QRコードを読み取り中</div>
+      <div id="reader"></div>
+      <div class="hint">
+        カメラの使用許可が出たら「許可」を選んでください。<br>
+        読み取りをやめるときは下のボタンを押してください。
+      </div>
+      <div class="actions">
+        <button class="ghost" onclick="stopScanner()">✕ スキャンをやめる</button>
+      </div>
+      <div id="cameraError" class="hint hidden"></div>
+    </section>
+
+    <section class="card">
+      <div class="progressTop">
+        <div class="sectionTitle" style="margin:0">🗺️ 冒険の進み具合</div>
+        <div class="count" id="count">0 / 10</div>
+      </div>
+      <div class="bar"><div id="bar"></div></div>
+      <div id="progressList"></div>
+    </section>
+
+    <section class="card">
+      <div class="sectionTitle">💡 QRコードの作り方</div>
+      <div class="hint">
+        QRコードの内容は <b>?q=1</b> ～ <b>?q=10</b> にしてください。<br>
+        例：このページのURLが <span class="small">https://example.com/</span> なら、
+        第1問は <b>https://example.com/?q=1</b> です。<br><br>
+        QRを読み取ると、その番号のGoogleフォームを開けます。
+      </div>
+    </section>
+  </main>
+</div>
+
+<div id="modal" class="modal hidden">
+  <div class="modalBox">
+    <h2 id="modalTitle"></h2>
+    <p id="modalText"></p>
+    <div class="actions">
+      <button id="modalMain" class="secondary"></button>
+      <button class="ghost" onclick="closeModal()">閉じる</button>
+    </div>
+  </div>
+</div>
+
+<div id="settingsModal" class="modal hidden">
+  <div class="modalBox">
+    <h2>⚙️ 問題設定</h2>
+    <p class="small">GoogleフォームのURLを入力してください。この端末のブラウザに保存されます。</p>
+    <div id="settingsFields"></div>
+    <div class="actions">
+      <button class="secondary" onclick="saveSettings()">保存</button>
+      <button class="ghost" onclick="closeSettings()">閉じる</button>
+    </div>
+  </div>
+</div>
+
+<div id="chooserModal" class="modal hidden">
+  <div class="modalBox">
+    <h2>🔗 問題をひらく</h2>
+    <div id="chooserFields"></div>
+    <div class="actions">
+      <button class="ghost" onclick="closeChooser()">閉じる</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const DEFAULT_QUESTIONS = Array.from({length: 10}, (_, i) => ({
+  id: i + 1,
+  name: `第${i + 1}問`,
+  url: ""
+}));
+
+let questions = loadQuestions();
+let scanner = null;
+let currentScanId = null;
+
+function loadQuestions() {
+  try {
+    const saved = localStorage.getItem("pikachu_questions_v2");
+    if (saved) {
+      const a = JSON.parse(saved);
+      if (Array.isArray(a) && a.length === 10) return a;
+    }
+  } catch (e) {}
+  return DEFAULT_QUESTIONS.map(x => ({...x}));
+}
+
+function saveQuestions() {
+  localStorage.setItem("pikachu_questions_v2", JSON.stringify(questions));
+}
+
+function clearedSet() {
+  try {
+    return new Set(JSON.parse(localStorage.getItem("pikachu_cleared_v2") || "[]"));
+  } catch (e) {
+    return new Set();
+  }
+}
+
+function markCleared(id) {
+  const s = clearedSet();
+  s.add(Number(id));
+  localStorage.setItem("pikachu_cleared_v2", JSON.stringify([...s]));
+  renderProgress();
+}
+
+function renderProgress() {
+  const s = clearedSet();
+  const n = s.size;
+
+  document.getElementById("count").textContent = `${n} / 10`;
+  document.getElementById("bar").style.width = (n * 10) + "%";
+
+  document.getElementById("progressList").innerHTML = questions.map(q => {
+    const done = s.has(q.id);
+    return `<div class="qrow">
+      <div class="badge">${done ? "🔓" : "🔒"}</div>
+      <div class="qname">${escapeHtml(q.name)}</div>
+      <div class="status ${done ? "done" : ""}">${done ? "クリア！" : "まだだよ"}</div>
+    </div>`;
+  }).join("");
+}
+
+function escapeHtml(v) {
+  return String(v ?? "").replace(/[&<>"']/g, c => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  }[c]));
+}
+
+async function startScanner() {
+  document.getElementById("scannerCard").classList.remove("hidden");
+  document.getElementById("cameraError").classList.add("hidden");
+  document.getElementById("reader").innerHTML = "";
+
+  if (typeof Html5Qrcode === "undefined") {
+    showCameraError("QR読み取りライブラリを読み込めませんでした。インターネット接続を確認して、ページを再読み込みしてください。");
+    return;
+  }
+
+  scanner = new Html5Qrcode("reader");
+  const config = {
+    fps: 10,
+    qrbox: (w, h) => ({
+      width: Math.min(280, w * 0.8),
+      height: Math.min(280, h * 0.8)
+    })
+  };
+
+  try {
+    await scanner.start(
+      {facingMode: "environment"},
+      config,
+      onScanSuccess,
+      onScanFailure
+    );
+  } catch (e) {
+    console.error(e);
+    showCameraError(
+      "カメラを起動できませんでした。Chromeのサイト設定でカメラを「許可」にしてください。" +
+      "<br>それでも動かない場合は、ページを再読み込みしてもう一度試してください。" +
+      "<br><br>エラー: " + escapeHtml(e?.message || String(e))
+    );
+  }
+}
+
+function showCameraError(msg) {
+  const el = document.getElementById("cameraError");
+  el.innerHTML = msg;
+  el.classList.remove("hidden");
+}
+
+function onScanFailure() {}
+
+async function stopScanner() {
+  if (scanner) {
+    try { await scanner.stop(); } catch (e) {}
+    try { scanner.clear(); } catch (e) {}
+    scanner = null;
+  }
+  document.getElementById("scannerCard").classList.add("hidden");
+}
+
+async function onScanSuccess(decodedText) {
+  if (currentScanId) return;
+
+  const id = parseQuestionId(decodedText);
+  if (!id) return;
+
+  currentScanId = id;
+  await stopScanner();
+  currentScanId = null;
+  showQuestion(id);
+}
+
+function parseQuestionId(text) {
+  try {
+    const u = new URL(text);
+    const p = u.searchParams.get("q") || u.searchParams.get("question");
+    if (p && /^(?:[1-9]|10)$/.test(p)) return Number(p);
+  } catch (e) {}
+
+  const m = String(text).match(/(?:第|Q)\s*(10|[1-9])\s*(?:問)?/i);
+  return m ? Number(m[1]) : null;
+}
+
+function showQuestion(id) {
+  const q = questions.find(x => x.id === id);
+  if (!q) return;
+
+  document.getElementById("modalTitle").textContent = `🔓 ${q.name}`;
+  document.getElementById("modalText").textContent = q.url
+    ? "この問題をひらきます。答え終わったら、この画面に戻って「クリア！」を押してください。"
+    : "まだGoogleフォームのURLが設定されていません。「問題設定」からURLを登録してください。";
+
+  const btn = document.getElementById("modalMain");
+
+  if (q.url) {
+    btn.textContent = "🔗 問題をひらく";
+    btn.onclick = () => openQuestion(q);
+  } else {
+    btn.textContent = "⚙️ 問題設定";
+    btn.onclick = () => {
+      closeModal();
+      openSettings();
+    };
+  }
+
+  document.getElementById("modal").classList.remove("hidden");
+}
+
+function openQuestion(q) {
+  window.open(q.url, "_blank", "noopener");
+
+  document.getElementById("modalTitle").textContent = `🎉 ${q.name}`;
+  document.getElementById("modalText").textContent =
+    "問題が終わったら、この画面に戻って「クリア！」を押してください。";
+
+  const btn = document.getElementById("modalMain");
+  btn.textContent = "✅ クリア！";
+  btn.onclick = () => {
+    markCleared(q.id);
+    closeModal();
+    showToast(`${q.name} クリア！`);
+  };
+}
+
+function showToast(msg) {
+  const d = document.createElement("div");
+  d.textContent = msg;
+  d.style.cssText =
+    "position:fixed;left:50%;bottom:28px;transform:translateX(-50%);" +
+    "background:#35a853;color:white;padding:13px 18px;border-radius:999px;" +
+    "font-weight:900;z-index:100;box-shadow:0 5px 20px #0004";
+  document.body.appendChild(d);
+  setTimeout(() => d.remove(), 1800);
+}
+
+function closeModal() {
+  document.getElementById("modal").classList.add("hidden");
+}
+
+function openSettings() {
+  const box = document.getElementById("settingsFields");
+
+  box.innerHTML = questions.map(q => `
+    <div class="formrow">
+      <label>${q.name}</label>
+      <input
+        id="url_${q.id}"
+        type="url"
+        inputmode="url"
+        placeholder="https://docs.google.com/forms/..."
+        value="${escapeHtml(q.url)}">
+    </div>
+  `).join("");
+
+  document.getElementById("settingsModal").classList.remove("hidden");
+}
+
+function saveSettings() {
+  questions = questions.map(q => ({
+    ...q,
+    url: document.getElementById(`url_${q.id}`).value.trim()
+  }));
+
+  saveQuestions();
+  renderProgress();
+  closeSettings();
+  showToast("問題設定を保存しました");
+}
+
+function closeSettings() {
+  document.getElementById("settingsModal").classList.add("hidden");
+}
+
+function openChooser() {
+  const box = document.getElementById("chooserFields");
+
+  box.innerHTML = questions.map(q => {
+    const done = clearedSet().has(q.id);
+    return `<button
+      class="${done ? "ghost" : "secondary"}"
+      style="width:100%;margin:5px 0"
+      onclick="chooseQuestion(${q.id})">
+      ${done ? "🔓" : "🔒"} ${escapeHtml(q.name)}
+      ${done ? "（クリア済み）" : ""}
+    </button>`;
+  }).join("");
+
+  document.getElementById("chooserModal").classList.remove("hidden");
+}
+
+function chooseQuestion(id) {
+  closeChooser();
+  showQuestion(id);
+}
+
+function closeChooser() {
+  document.getElementById("chooserModal").classList.add("hidden");
+}
+
+renderProgress();
+</script>
+</body>
+</html>
