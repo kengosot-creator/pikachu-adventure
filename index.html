@@ -1,579 +1,1280 @@
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#ffd92f">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>ピカチュウの大冒険</title>
-  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-  <style>
-    :root {
-      --yellow: #ffd92f;
-      --yellow2: #fff4a8;
-      --brown: #4b3518;
-      --white: #fffdf4;
-      --line: #e6c94a;
-      --green: #35a853;
-    }
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    * { box-sizing: border-box; }
+  <title>⚡ ピカチュウの大冒険</title>
+
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
-      background: linear-gradient(#ffe76b 0 145px, #fff9cf 145px 100%);
-      color: var(--brown);
-      font-family: -apple-system, BlinkMacSystemFont, "Noto Sans JP", "Yu Gothic", sans-serif;
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        "Hiragino Kaku Gothic ProN",
+        "Yu Gothic",
+        sans-serif;
+      background:
+        linear-gradient(180deg, #fff7b2 0%, #fffbe0 45%, #ffffff 100%);
+      color: #333;
+      min-height: 100vh;
     }
 
-    .wrap {
-      max-width: 760px;
-      margin: auto;
-      padding-bottom: 40px;
+    .container {
+      width: min(92%, 700px);
+      margin: 0 auto;
+      padding: 20px 0 50px;
     }
 
     header {
-      padding: 18px 18px 14px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      background: rgba(255,217,47,.96);
-      box-shadow: 0 2px 10px #8b6f1b33;
+      text-align: center;
+      margin-bottom: 20px;
     }
 
-    .logo { font-size: 34px; }
-    .title { font-weight: 900; font-size: 21px; }
-    .sub { font-size: 12px; opacity: .7; }
+    header h1 {
+      margin: 0;
+      font-size: 30px;
+      font-weight: 900;
+      color: #333;
+      text-shadow: 2px 2px 0 #ffd83d;
+    }
 
-    main { padding: 16px; }
-
-    .hero, .card {
-      background: var(--white);
-      border: 2px solid var(--line);
-      border-radius: 22px;
-      box-shadow: 0 6px 18px #765a1220;
+    header p {
+      margin: 8px 0 0;
+      font-size: 15px;
+      font-weight: 700;
+      color: #665b20;
     }
 
     .hero {
-      padding: 22px 18px;
+      background: #fff;
+      border-radius: 24px;
+      padding: 22px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+      border: 3px solid #ffd83d;
+      margin-bottom: 18px;
+    }
+
+    .hero-title {
       text-align: center;
+      font-size: 21px;
+      font-weight: 900;
+      margin-bottom: 10px;
     }
 
-    .pikachu {
-      font-size: 72px;
-      line-height: 1;
-      margin: 2px 0 12px;
+    .hero-text {
+      text-align: center;
+      line-height: 1.7;
+      font-size: 14px;
+      margin-bottom: 18px;
     }
 
-    .bubble {
-      display: inline-block;
-      background: var(--yellow2);
-      border-radius: 18px;
-      padding: 10px 15px;
-      font-weight: 800;
-      margin-bottom: 16px;
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
 
     button {
-      border: 0;
-      border-radius: 16px;
+      width: 100%;
+      border: none;
+      border-radius: 15px;
       padding: 14px 18px;
       font-size: 16px;
       font-weight: 900;
       cursor: pointer;
-      touch-action: manipulation;
+      transition: transform 0.1s ease, opacity 0.1s ease;
     }
 
-    .scanBtn {
-      background: #3b3020;
-      color: white;
-      width: 100%;
-      font-size: 18px;
+    button:active {
+      transform: scale(0.97);
+    }
+
+    .primary {
+      background: #ffd83d;
+      color: #333;
+      box-shadow: 0 4px 0 #d8ad00;
     }
 
     .secondary {
-      background: var(--yellow);
-      color: var(--brown);
+      background: #fff3a3;
+      color: #5d4d00;
+      box-shadow: 0 4px 0 #e5cf5a;
     }
 
     .ghost {
-      background: #fff;
-      border: 1px solid var(--line);
+      background: #f5f5f5;
+      color: #555;
+      box-shadow: 0 3px 0 #d5d5d5;
+    }
+
+    .danger {
+      background: #fff0f0;
+      color: #c0392b;
+      box-shadow: 0 3px 0 #e4b5b0;
     }
 
     .card {
-      margin-top: 16px;
-      padding: 18px;
+      background: #fff;
+      border-radius: 22px;
+      padding: 20px;
+      margin-bottom: 18px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.07);
     }
 
-    .sectionTitle {
-      font-size: 18px;
+    .card-title {
+      font-size: 19px;
       font-weight: 900;
-      margin: 0 0 12px;
+      margin-bottom: 14px;
     }
 
     #reader {
       width: 100%;
-      max-width: 520px;
+      max-width: 500px;
       margin: 0 auto;
       overflow: hidden;
-      border-radius: 16px;
+      border-radius: 15px;
     }
 
-    .hint {
+    .scanner-help {
+      text-align: center;
+      color: #777;
       font-size: 13px;
-      line-height: 1.7;
-      opacity: .75;
       margin-top: 10px;
+      line-height: 1.6;
     }
 
-    .hidden { display: none !important; }
-
-    .progressTop {
-      display: flex;
-      justify-content: space-between;
-      align-items: end;
-      margin-bottom: 9px;
+    .progress-summary {
+      text-align: center;
+      margin-bottom: 14px;
     }
 
-    .count { font-weight: 900; }
+    .progress-number {
+      font-size: 30px;
+      font-weight: 900;
+      color: #e3ad00;
+    }
 
-    .bar {
-      height: 13px;
-      background: #eee0a0;
-      border-radius: 99px;
+    .progress-bar {
+      width: 100%;
+      height: 15px;
+      background: #eee;
+      border-radius: 999px;
       overflow: hidden;
+      margin-top: 8px;
     }
 
-    .bar > div {
+    .progress-fill {
       height: 100%;
-      width: 0;
-      background: var(--green);
-      transition: width .3s;
+      width: 0%;
+      background: #ffd83d;
+      border-radius: 999px;
+      transition: width 0.3s ease;
     }
 
-    .qrow {
+    .question-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .question-row {
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 13px 4px;
-      border-bottom: 1px dashed #d9c56a;
+      gap: 10px;
+      padding: 12px;
+      border-radius: 13px;
+      background: #f7f7f7;
     }
 
-    .qrow:last-child { border-bottom: 0; }
-    .badge { font-size: 25px; width: 34px; text-align: center; }
-    .qname { font-weight: 900; flex: 1; }
-    .status { font-size: 13px; font-weight: 800; color: #888; }
-    .done { color: var(--green); }
-
-    .actions {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-top: 14px;
+    .question-row.cleared {
+      background: #fff5b8;
     }
 
-    .actions button {
+    .question-icon {
+      font-size: 22px;
+      width: 30px;
+      text-align: center;
+    }
+
+    .question-name {
       flex: 1;
-      min-width: 130px;
+      font-weight: 800;
+      font-size: 14px;
+    }
+
+    .question-status {
+      font-size: 12px;
+      font-weight: 800;
+      color: #888;
+    }
+
+    .question-row.cleared .question-status {
+      color: #d09d00;
+    }
+
+    .info {
+      background: #fff9d8;
+      border: 2px dashed #e6c52e;
+      border-radius: 15px;
+      padding: 14px;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .info strong {
+      color: #a67c00;
+    }
+
+    /* モーダル */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.48);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 1000;
+    }
+
+    .modal-backdrop.show {
+      display: flex;
     }
 
     .modal {
-      position: fixed;
-      inset: 0;
-      background: #0008;
-      z-index: 50;
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      padding: 14px;
-    }
-
-    .modalBox {
-      width: min(600px, 100%);
-      background: #fffdf4;
-      border-radius: 24px 24px 16px 16px;
+      width: min(100%, 500px);
+      max-height: 90vh;
+      overflow-y: auto;
+      background: #fff;
+      border-radius: 24px;
       padding: 22px;
-      border: 2px solid var(--line);
+      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.25);
     }
 
-    .modalBox h2 { margin: 0 0 8px; }
-    .modalBox p { line-height: 1.6; }
-    .small { font-size: 12px; opacity: .7; }
+    .modal h2 {
+      margin: 0 0 10px;
+      text-align: center;
+      font-size: 22px;
+    }
 
-    input {
+    .modal p {
+      line-height: 1.7;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .modal-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .question-setting {
+      margin-bottom: 15px;
+    }
+
+    .question-setting label {
+      display: block;
+      font-size: 14px;
+      font-weight: 900;
+      margin-bottom: 6px;
+    }
+
+    .question-setting input {
       width: 100%;
       padding: 12px;
-      border: 1px solid #d4bd56;
-      border-radius: 12px;
-      font-size: 14px;
-      margin-top: 5px;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      font-size: 13px;
     }
 
-    .formrow { margin: 10px 0; }
-    .formrow label { font-size: 12px; font-weight: 800; }
+    .question-setting input:focus {
+      outline: none;
+      border-color: #ffd83d;
+    }
 
-    @media (min-width: 760px) {
-      .modal { align-items: center; }
-      header { border-radius: 0 0 20px 20px; }
+    .choice-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 15px;
+    }
+
+    .choice-button {
+      background: #fff9d8;
+      border: 2px solid #f1d65c;
+      box-shadow: none;
+      color: #5a4c00;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 25px;
+      transform: translateX(-50%) translateY(100px);
+      background: #333;
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 800;
+      z-index: 2000;
+      opacity: 0;
+      transition: all 0.25s ease;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    footer {
+      text-align: center;
+      font-size: 12px;
+      color: #999;
+      margin-top: 20px;
+    }
+
+    @media (min-width: 600px) {
+      .actions {
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
+
+      .actions button {
+        flex: 1;
+        min-width: 200px;
+      }
     }
   </style>
 </head>
 
 <body>
-<div class="wrap">
-  <header>
-    <div class="logo">⚡</div>
-    <div>
-      <div class="title">ピカチュウの大冒険</div>
-      <div class="sub">QRを見つけて10問の冒険を進めよう！</div>
-    </div>
-  </header>
 
-  <main>
+  <div class="container">
+
+    <header>
+      <h1>⚡ ピカチュウの大冒険</h1>
+      <p>QRを見つけて10問の冒険を進めよう！</p>
+    </header>
+
+    <!-- メイン -->
     <section class="hero">
-      <div class="pikachu">⚡🐭</div>
-      <div class="bubble">QRコードを見つけたら、ここから読み取ろう！</div>
-      <button class="scanBtn" onclick="startScanner()">📷 QRコードをよみとる</button>
+      <div class="hero-title">
+        🌟 冒険スタート！
+      </div>
+
+      <div class="hero-text">
+        家の中にかくされたQRコードを探そう！<br>
+        QRコードを見つけたら、カメラで読み取ってね。
+      </div>
+
       <div class="actions">
-        <button class="secondary" onclick="openChooser()">🔗 問題をひらく</button>
-        <button class="ghost" onclick="openSettings()">⚙️ 問題設定</button>
+        <button class="primary" onclick="startScanner()">
+          📷 QRコードをよみとる
+        </button>
+
+        <button class="secondary" onclick="showQuestionChooser()">
+          🔗 問題をひらく
+        </button>
+
+        <button class="ghost" onclick="showSettings()">
+          ⚙️ 問題設定
+        </button>
+
+        <button class="danger" onclick="resetAdventure()">
+          🔄 冒険を最初から
+        </button>
       </div>
     </section>
 
-    <section id="scannerCard" class="card hidden">
-      <div class="sectionTitle">📷 QRコードを読み取り中</div>
+    <!-- QRスキャナー -->
+    <section class="card" id="scannerCard" style="display:none;">
+      <div class="card-title">
+        📷 QRコードを読み取ろう
+      </div>
+
       <div id="reader"></div>
-      <div class="hint">
-        カメラの使用許可が出たら「許可」を選んでください。<br>
-        読み取りをやめるときは下のボタンを押してください。
+
+      <div class="scanner-help">
+        QRコードをカメラの枠内に入れてください。
       </div>
-      <div class="actions">
-        <button class="ghost" onclick="stopScanner()">✕ スキャンをやめる</button>
+
+      <div style="margin-top:15px;">
+        <button class="ghost" onclick="stopScanner()">
+          ✕ カメラを閉じる
+        </button>
       </div>
-      <div id="cameraError" class="hint hidden"></div>
     </section>
 
+    <!-- 進捗 -->
     <section class="card">
-      <div class="progressTop">
-        <div class="sectionTitle" style="margin:0">🗺️ 冒険の進み具合</div>
-        <div class="count" id="count">0 / 10</div>
+      <div class="card-title">
+        🗺️ 冒険の進み具合
       </div>
-      <div class="bar"><div id="bar"></div></div>
-      <div id="progressList"></div>
+
+      <div class="progress-summary">
+        <div>
+          <span class="progress-number" id="clearedCount">0</span>
+          <span style="font-weight:900;"> / 10</span>
+        </div>
+
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+      </div>
+
+      <div class="question-list" id="questionList"></div>
     </section>
 
+    <!-- QR説明 -->
     <section class="card">
-      <div class="sectionTitle">💡 QRコードの作り方</div>
-      <div class="hint">
-        QRコードの内容は <b>?q=1</b> ～ <b>?q=10</b> にしてください。<br>
-        例：このページのURLが <span class="small">https://example.com/</span> なら、
-        第1問は <b>https://example.com/?q=1</b> です。<br><br>
-        QRを読み取ると、その番号のGoogleフォームを開けます。
+      <div class="card-title">
+        💡 QRコードについて
+      </div>
+
+      <div class="info">
+        QRコードには、次のようなURLを入れてください。<br><br>
+
+        <strong>
+          https://kengosot-creator.github.io/pikachu-adventure/?q=1
+        </strong>
+
+        <br><br>
+
+        最後の <strong>?q=1</strong> の数字を
+        <strong>1〜10</strong> に変えることで、
+        それぞれの問題につながります。
       </div>
     </section>
-  </main>
-</div>
 
-<div id="modal" class="modal hidden">
-  <div class="modalBox">
-    <h2 id="modalTitle"></h2>
-    <p id="modalText"></p>
-    <div class="actions">
-      <button id="modalMain" class="secondary"></button>
-      <button class="ghost" onclick="closeModal()">閉じる</button>
-    </div>
+    <footer>
+      ⚡ ピカチュウの大冒険
+    </footer>
+
   </div>
-</div>
 
-<div id="settingsModal" class="modal hidden">
-  <div class="modalBox">
-    <h2>⚙️ 問題設定</h2>
-    <p class="small">GoogleフォームのURLを入力してください。この端末のブラウザに保存されます。</p>
-    <div id="settingsFields"></div>
-    <div class="actions">
-      <button class="secondary" onclick="saveSettings()">保存</button>
-      <button class="ghost" onclick="closeSettings()">閉じる</button>
-    </div>
+
+  <!-- モーダル -->
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal" id="modalContent"></div>
   </div>
-</div>
 
-<div id="chooserModal" class="modal hidden">
-  <div class="modalBox">
-    <h2>🔗 問題をひらく</h2>
-    <div id="chooserFields"></div>
-    <div class="actions">
-      <button class="ghost" onclick="closeChooser()">閉じる</button>
-    </div>
-  </div>
-</div>
+  <!-- トースト -->
+  <div class="toast" id="toast"></div>
 
-<script>
-const DEFAULT_QUESTIONS = Array.from({length: 10}, (_, i) => ({
-  id: i + 1,
-  name: `第${i + 1}問`,
-  url: ""
-}));
 
-let questions = loadQuestions();
-let scanner = null;
-let currentScanId = null;
+  <script>
 
-function loadQuestions() {
-  try {
-    const saved = localStorage.getItem("pikachu_questions_v2");
-    if (saved) {
-      const a = JSON.parse(saved);
-      if (Array.isArray(a) && a.length === 10) return a;
+    const QUESTIONS_KEY = "pikachu_questions_v2";
+    const CLEARED_KEY = "pikachu_cleared_v2";
+
+    let scanner = null;
+    let scannerRunning = false;
+
+    const DEFAULT_QUESTIONS = Array.from(
+      { length: 10 },
+      (_, i) => ({
+        id: i + 1,
+        name: `第${i + 1}問`,
+        url: ""
+      })
+    );
+
+
+    /* =========================
+       問題設定
+    ========================= */
+
+    function loadQuestions() {
+
+      try {
+
+        const saved =
+          JSON.parse(localStorage.getItem(QUESTIONS_KEY));
+
+        if (
+          Array.isArray(saved) &&
+          saved.length === 10
+        ) {
+          return saved;
+        }
+
+      } catch (e) {
+        console.log(e);
+      }
+
+      return DEFAULT_QUESTIONS;
     }
-  } catch (e) {}
-  return DEFAULT_QUESTIONS.map(x => ({...x}));
-}
 
-function saveQuestions() {
-  localStorage.setItem("pikachu_questions_v2", JSON.stringify(questions));
-}
 
-function clearedSet() {
-  try {
-    return new Set(JSON.parse(localStorage.getItem("pikachu_cleared_v2") || "[]"));
-  } catch (e) {
-    return new Set();
-  }
-}
+    function saveQuestions(questions) {
 
-function markCleared(id) {
-  const s = clearedSet();
-  s.add(Number(id));
-  localStorage.setItem("pikachu_cleared_v2", JSON.stringify([...s]));
-  renderProgress();
-}
+      localStorage.setItem(
+        QUESTIONS_KEY,
+        JSON.stringify(questions)
+      );
 
-function renderProgress() {
-  const s = clearedSet();
-  const n = s.size;
+    }
 
-  document.getElementById("count").textContent = `${n} / 10`;
-  document.getElementById("bar").style.width = (n * 10) + "%";
 
-  document.getElementById("progressList").innerHTML = questions.map(q => {
-    const done = s.has(q.id);
-    return `<div class="qrow">
-      <div class="badge">${done ? "🔓" : "🔒"}</div>
-      <div class="qname">${escapeHtml(q.name)}</div>
-      <div class="status ${done ? "done" : ""}">${done ? "クリア！" : "まだだよ"}</div>
-    </div>`;
-  }).join("");
-}
+    /* =========================
+       クリア状況
+    ========================= */
 
-function escapeHtml(v) {
-  return String(v ?? "").replace(/[&<>"']/g, c => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#39;"
-  }[c]));
-}
+    function clearedSet() {
 
-async function startScanner() {
-  document.getElementById("scannerCard").classList.remove("hidden");
-  document.getElementById("cameraError").classList.add("hidden");
-  document.getElementById("reader").innerHTML = "";
+      try {
 
-  if (typeof Html5Qrcode === "undefined") {
-    showCameraError("QR読み取りライブラリを読み込めませんでした。インターネット接続を確認して、ページを再読み込みしてください。");
-    return;
-  }
+        const saved =
+          JSON.parse(localStorage.getItem(CLEARED_KEY));
 
-  scanner = new Html5Qrcode("reader");
-  const config = {
-    fps: 10,
-    qrbox: (w, h) => ({
-      width: Math.min(280, w * 0.8),
-      height: Math.min(280, h * 0.8)
-    })
-  };
+        if (Array.isArray(saved)) {
+          return new Set(saved);
+        }
 
-  try {
-    await scanner.start(
-      {facingMode: "environment"},
-      config,
-      onScanSuccess,
-      onScanFailure
-    );
-  } catch (e) {
-    console.error(e);
-    showCameraError(
-      "カメラを起動できませんでした。Chromeのサイト設定でカメラを「許可」にしてください。" +
-      "<br>それでも動かない場合は、ページを再読み込みしてもう一度試してください。" +
-      "<br><br>エラー: " + escapeHtml(e?.message || String(e))
-    );
-  }
-}
+      } catch (e) {
+        console.log(e);
+      }
 
-function showCameraError(msg) {
-  const el = document.getElementById("cameraError");
-  el.innerHTML = msg;
-  el.classList.remove("hidden");
-}
+      return new Set();
+    }
 
-function onScanFailure() {}
 
-async function stopScanner() {
-  if (scanner) {
-    try { await scanner.stop(); } catch (e) {}
-    try { scanner.clear(); } catch (e) {}
-    scanner = null;
-  }
-  document.getElementById("scannerCard").classList.add("hidden");
-}
+    function markCleared(id) {
 
-async function onScanSuccess(decodedText) {
-  if (currentScanId) return;
+      const set = clearedSet();
 
-  const id = parseQuestionId(decodedText);
-  if (!id) return;
+      set.add(id);
 
-  currentScanId = id;
-  await stopScanner();
-  currentScanId = null;
-  showQuestion(id);
-}
+      localStorage.setItem(
+        CLEARED_KEY,
+        JSON.stringify([...set])
+      );
 
-function parseQuestionId(text) {
-  try {
-    const u = new URL(text);
-    const p = u.searchParams.get("q") || u.searchParams.get("question");
-    if (p && /^(?:[1-9]|10)$/.test(p)) return Number(p);
-  } catch (e) {}
+      renderProgress();
 
-  const m = String(text).match(/(?:第|Q)\s*(10|[1-9])\s*(?:問)?/i);
-  return m ? Number(m[1]) : null;
-}
+    }
 
-function showQuestion(id) {
-  const q = questions.find(x => x.id === id);
-  if (!q) return;
 
-  document.getElementById("modalTitle").textContent = `🔓 ${q.name}`;
-  document.getElementById("modalText").textContent = q.url
-    ? "この問題をひらきます。答え終わったら、この画面に戻って「クリア！」を押してください。"
-    : "まだGoogleフォームのURLが設定されていません。「問題設定」からURLを登録してください。";
+    /* =========================
+       冒険をリセット
+    ========================= */
 
-  const btn = document.getElementById("modalMain");
+    function resetAdventure() {
 
-  if (q.url) {
-    btn.textContent = "🔗 問題をひらく";
-    btn.onclick = () => openQuestion(q);
-  } else {
-    btn.textContent = "⚙️ 問題設定";
-    btn.onclick = () => {
+      const cleared = clearedSet();
+
+      if (cleared.size === 0) {
+
+        showToast("まだクリアした問題はありません");
+
+        return;
+      }
+
+      const ok = confirm(
+        "クリアした問題をすべてリセットして、冒険を最初から始めますか？\n\n問題設定（GoogleフォームのURL）はそのまま残ります。"
+      );
+
+      if (!ok) {
+        return;
+      }
+
+      localStorage.removeItem(CLEARED_KEY);
+
+      renderProgress();
+
+      showToast("🌟 冒険を最初からに戻しました！");
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    }
+
+
+    /* =========================
+       進捗表示
+    ========================= */
+
+    function renderProgress() {
+
+      const questions = loadQuestions();
+      const cleared = clearedSet();
+
+      const count = cleared.size;
+
+      document.getElementById("clearedCount")
+        .textContent = count;
+
+      document.getElementById("progressFill")
+        .style.width = `${count / 10 * 100}%`;
+
+
+      const list =
+        document.getElementById("questionList");
+
+      list.innerHTML = "";
+
+
+      questions.forEach(q => {
+
+        const row =
+          document.createElement("div");
+
+        const isCleared =
+          cleared.has(q.id);
+
+        row.className =
+          "question-row" +
+          (isCleared ? " cleared" : "");
+
+
+        row.innerHTML = `
+          <div class="question-icon">
+            ${isCleared ? "⭐" : "🔒"}
+          </div>
+
+          <div class="question-name">
+            ${q.name}
+          </div>
+
+          <div class="question-status">
+            ${isCleared ? "クリア！" : "未クリア"}
+          </div>
+        `;
+
+        list.appendChild(row);
+
+      });
+
+    }
+
+
+    /* =========================
+       QRコード
+    ========================= */
+
+    function parseQuestionId(text) {
+
+      try {
+
+        const u = new URL(text);
+
+        const p =
+          u.searchParams.get("q") ||
+          u.searchParams.get("question");
+
+        if (
+          p &&
+          /^(?:[1-9]|10)$/.test(p)
+        ) {
+          return Number(p);
+        }
+
+      } catch (e) {}
+
+      const m =
+        String(text).match(
+          /(?:第|Q)\s*(10|[1-9])\s*(?:問)?/i
+        );
+
+      return m
+        ? Number(m[1])
+        : null;
+    }
+
+
+    /* =========================
+       スキャナー開始
+    ========================= */
+
+    function startScanner() {
+
+      const card =
+        document.getElementById("scannerCard");
+
+      card.style.display = "block";
+
+      card.scrollIntoView({
+        behavior: "smooth"
+      });
+
+
+      if (scannerRunning) {
+        return;
+      }
+
+
+      scanner =
+        new Html5Qrcode("reader");
+
+
+      scanner.start(
+
+        {
+          facingMode: "environment"
+        },
+
+        {
+          fps: 10,
+          qrbox: {
+            width: 250,
+            height: 250
+          }
+        },
+
+        onScanSuccess,
+
+        () => {}
+
+      )
+      .then(() => {
+
+        scannerRunning = true;
+
+      })
+      .catch(err => {
+
+        console.error(err);
+
+        showModal(
+          "📷 カメラを起動できませんでした",
+          `
+          <p>
+            カメラを利用するには、ブラウザのカメラ許可が必要です。
+          </p>
+          `,
+          [
+            {
+              text: "閉じる",
+              className: "ghost",
+              action: closeModal
+            }
+          ]
+        );
+
+      });
+
+    }
+
+
+    /* =========================
+       スキャナー停止
+    ========================= */
+
+    function stopScanner() {
+
+      if (!scanner || !scannerRunning) {
+
+        document.getElementById("scannerCard")
+          .style.display = "none";
+
+        return;
+      }
+
+
+      scanner.stop()
+        .then(() => {
+
+          scannerRunning = false;
+
+          document.getElementById("scannerCard")
+            .style.display = "none";
+
+        })
+        .catch(err => {
+
+          console.log(err);
+
+          scannerRunning = false;
+
+          document.getElementById("scannerCard")
+            .style.display = "none";
+
+        });
+
+    }
+
+
+    /* =========================
+       QR読み取り成功
+    ========================= */
+
+    function onScanSuccess(decodedText) {
+
+      const id =
+        parseQuestionId(decodedText);
+
+
+      if (!id) {
+
+        showToast(
+          "このQRコードは問題QRではありません"
+        );
+
+        return;
+      }
+
+
+      stopScanner();
+
+      showQuestion(id);
+
+    }
+
+
+    /* =========================
+       問題表示
+    ========================= */
+
+    function showQuestion(id) {
+
+      const questions = loadQuestions();
+
+      const q =
+        questions.find(x => x.id === id);
+
+
+      if (!q) {
+
+        showToast("問題が見つかりません");
+
+        return;
+      }
+
+
+      if (!q.url) {
+
+        showModal(
+
+          `🔒 ${q.name}`,
+
+          `
+          <p>
+            この問題にはまだ問題ページが設定されていません。
+          </p>
+          `,
+
+          [
+            {
+              text: "⚙️ 問題設定",
+              className: "primary",
+              action: () => {
+                closeModal();
+                showSettings();
+              }
+            },
+            {
+              text: "閉じる",
+              className: "ghost",
+              action: closeModal
+            }
+          ]
+
+        );
+
+        return;
+      }
+
+
+      showModal(
+
+        `🔓 ${q.name}`,
+
+        `
+        <p>
+          問題を見つけたよ！<br>
+          Googleフォームの問題に挑戦しよう。
+        </p>
+        `,
+
+        [
+          {
+            text: "🔗 問題をひらく",
+            className: "primary",
+            action: () => openQuestion(q)
+          },
+          {
+            text: "閉じる",
+            className: "ghost",
+            action: closeModal
+          }
+        ]
+
+      );
+
+    }
+
+
+    /* =========================
+       問題を開く
+    ========================= */
+
+    function openQuestion(q) {
+
+      window.open(
+        q.url,
+        "_blank"
+      );
+
+
+      showModal(
+
+        `🎉 ${q.name}`,
+
+        `
+        <p>
+          問題ページを開きました！<br><br>
+
+          問題を解いたら、この画面に戻って<br>
+          <strong>「クリア！」</strong>
+          を押してください。
+        </p>
+        `,
+
+        [
+          {
+            text: "✅ クリア！",
+            className: "primary",
+            action: () => {
+
+              markCleared(q.id);
+
+              closeModal();
+
+              showToast(
+                `${q.name} クリア！`
+              );
+
+            }
+          },
+
+          {
+            text: "あとで",
+            className: "ghost",
+            action: closeModal
+          }
+        ]
+
+      );
+
+    }
+
+
+    /* =========================
+       問題選択
+    ========================= */
+
+    function showQuestionChooser() {
+
+      const questions =
+        loadQuestions();
+
+      let html = `
+        <p>
+          開きたい問題を選んでください。
+        </p>
+
+        <div class="choice-list">
+      `;
+
+
+      questions.forEach(q => {
+
+        html += `
+          <button
+            class="choice-button"
+            onclick="chooseQuestion(${q.id})"
+          >
+            ${q.id}. ${q.name}
+          </button>
+        `;
+
+      });
+
+
+      html += `
+        </div>
+      `;
+
+
+      showModal(
+
+        "🔗 問題をひらく",
+
+        html,
+
+        [
+          {
+            text: "閉じる",
+            className: "ghost",
+            action: closeModal
+          }
+        ]
+
+      );
+
+    }
+
+
+    function chooseQuestion(id) {
+
       closeModal();
-      openSettings();
-    };
-  }
 
-  document.getElementById("modal").classList.remove("hidden");
-}
+      setTimeout(() => {
 
-function openQuestion(q) {
-  window.open(q.url, "_blank", "noopener");
+        showQuestion(id);
 
-  document.getElementById("modalTitle").textContent = `🎉 ${q.name}`;
-  document.getElementById("modalText").textContent =
-    "問題が終わったら、この画面に戻って「クリア！」を押してください。";
+      }, 100);
 
-  const btn = document.getElementById("modalMain");
-  btn.textContent = "✅ クリア！";
-  btn.onclick = () => {
-    markCleared(q.id);
-    closeModal();
-    showToast(`${q.name} クリア！`);
-  };
-}
+    }
 
-function showToast(msg) {
-  const d = document.createElement("div");
-  d.textContent = msg;
-  d.style.cssText =
-    "position:fixed;left:50%;bottom:28px;transform:translateX(-50%);" +
-    "background:#35a853;color:white;padding:13px 18px;border-radius:999px;" +
-    "font-weight:900;z-index:100;box-shadow:0 5px 20px #0004";
-  document.body.appendChild(d);
-  setTimeout(() => d.remove(), 1800);
-}
 
-function closeModal() {
-  document.getElementById("modal").classList.add("hidden");
-}
+    /* =========================
+       問題設定
+    ========================= */
 
-function openSettings() {
-  const box = document.getElementById("settingsFields");
+    function showSettings() {
 
-  box.innerHTML = questions.map(q => `
-    <div class="formrow">
-      <label>${q.name}</label>
-      <input
-        id="url_${q.id}"
-        type="url"
-        inputmode="url"
-        placeholder="https://docs.google.com/forms/..."
-        value="${escapeHtml(q.url)}">
-    </div>
-  `).join("");
+      const questions =
+        loadQuestions();
 
-  document.getElementById("settingsModal").classList.remove("hidden");
-}
 
-function saveSettings() {
-  questions = questions.map(q => ({
-    ...q,
-    url: document.getElementById(`url_${q.id}`).value.trim()
-  }));
+      let html = `
+        <p>
+          各問題に対応するGoogleフォームのURLを入力してください。
+        </p>
+      `;
 
-  saveQuestions();
-  renderProgress();
-  closeSettings();
-  showToast("問題設定を保存しました");
-}
 
-function closeSettings() {
-  document.getElementById("settingsModal").classList.add("hidden");
-}
+      questions.forEach(q => {
 
-function openChooser() {
-  const box = document.getElementById("chooserFields");
+        html += `
+          <div class="question-setting">
 
-  box.innerHTML = questions.map(q => {
-    const done = clearedSet().has(q.id);
-    return `<button
-      class="${done ? "ghost" : "secondary"}"
-      style="width:100%;margin:5px 0"
-      onclick="chooseQuestion(${q.id})">
-      ${done ? "🔓" : "🔒"} ${escapeHtml(q.name)}
-      ${done ? "（クリア済み）" : ""}
-    </button>`;
-  }).join("");
+            <label>
+              ${q.name}
+            </label>
 
-  document.getElementById("chooserModal").classList.remove("hidden");
-}
+            <input
+              id="question-url-${q.id}"
+              type="url"
+              placeholder="https://docs.google.com/forms/..."
+              value="${escapeHtml(q.url)}"
+            >
 
-function chooseQuestion(id) {
-  closeChooser();
-  showQuestion(id);
-}
+          </div>
+        `;
 
-function closeChooser() {
-  document.getElementById("chooserModal").classList.add("hidden");
-}
+      });
 
-renderProgress();
-</script>
+
+      showModal(
+
+        "⚙️ 問題設定",
+
+        html,
+
+        [
+          {
+            text: "💾 保存する",
+            className: "primary",
+            action: saveSettings
+          },
+
+          {
+            text: "閉じる",
+            className: "ghost",
+            action: closeModal
+          }
+        ]
+
+      );
+
+    }
+
+
+    function saveSettings() {
+
+      const questions =
+        loadQuestions();
+
+
+      questions.forEach(q => {
+
+        const input =
+          document.getElementById(
+            `question-url-${q.id}`
+          );
+
+        if (input) {
+          q.url = input.value.trim();
+        }
+
+      });
+
+
+      saveQuestions(questions);
+
+      closeModal();
+
+      showToast(
+        "💾 問題設定を保存しました"
+      );
+
+    }
+
+
+    /* =========================
+       HTMLエスケープ
+    ========================= */
+
+    function escapeHtml(value) {
+
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+    }
+
+
+    /* =========================
+       モーダル
+    ========================= */
+
+    function showModal(
+      title,
+      body,
+      buttons = []
+    ) {
+
+      const backdrop =
+        document.getElementById(
+          "modalBackdrop"
+        );
+
+      const content =
+        document.getElementById(
+          "modalContent"
+        );
+
+
+      let buttonsHtml = "";
+
+      buttons.forEach((button, index) => {
+
+        buttonsHtml += `
+          <button
+            id="modal-button-${index}"
+            class="${button.className || "primary"}"
+          >
+            ${button.text}
+          </button>
+        `;
+
+      });
+
+
+      content.innerHTML = `
+
+        <h2>${title}</h2>
+
+        ${body}
+
+        <div class="modal-actions">
+          ${buttonsHtml}
+        </div>
+
+      `;
+
+
+      buttons.forEach((button, index) => {
+
+        const el =
+          document.getElementById(
+            `modal-button-${index}`
+          );
+
+        if (el) {
+          el.onclick = button.action;
+        }
+
+      });
+
+
+      backdrop.classList.add("show");
+
+    }
+
+
+    function closeModal() {
+
+      document
+        .getElementById("modalBackdrop")
+        .classList.remove("show");
+
+    }
+
+
+    /* =========================
+       トースト
+    ========================= */
+
+    let toastTimer = null;
+
+
+    function showToast(message) {
+
+      const toast =
+        document.getElementById("toast");
+
+      toast.textContent = message;
+
+      toast.classList.add("show");
+
+
+      clearTimeout(toastTimer);
+
+      toastTimer =
+        setTimeout(() => {
+
+          toast.classList.remove("show");
+
+        }, 2500);
+
+    }
+
+
+    /* =========================
+       初期化
+    ========================= */
+
+    document.addEventListener(
+      "DOMContentLoaded",
+      () => {
+
+        renderProgress();
+
+      }
+    );
+
+  </script>
+
 </body>
 </html>
